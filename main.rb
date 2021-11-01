@@ -9,7 +9,6 @@ class LaunchDiscussionWorkflow
     @participants = []
   end
 
-  # Expects @participants array to be filled with User objects
   def run
     return unless valid?
     run_callbacks(:create) do
@@ -21,22 +20,26 @@ class LaunchDiscussionWorkflow
     end
   end
 
-  def generate_participant_users_from_email_string
+class GenerateParticipantUser
+  def generate_participant_email
     return if @participants_email_string.blank?
     @participants_email_string.split.uniq.map do |email_address|
       User.create(email: email_address.downcase, password: Devise.friendly_token)
     end
   end
 
-  # ...
-
 end
+class TestLaunchDiscussionWorkflow < Test::Unit::TestCase
 
+  def test_run
+  end
 
-discussion = Discussion.new(title: "fake", ...)
-host = User.find(42)
-participants = "fake1@example.com\nfake2@example.com\nfake3@example.com"
+  def test_initialize
+    user = GenerateParticipantUser.new
+    workflow = LaunchDiscussionWorkflow.new
+    
+  end
 
-workflow = LaunchDiscussionWorkflow.new(discussion, host, participants)
-workflow.generate_participant_users_from_email_string
-workflow.run
+class TestGenerateParticipantUser < Test::Unit::TestCase
+  def test_generate_participant_email
+  end
